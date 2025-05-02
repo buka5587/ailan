@@ -181,7 +181,7 @@ export default class extends Module {
 				'Authorization': `Bearer ${aiChat.key}`
 			},
 			json: {
-				model: 'gpt-3.5-turbo',
+				model: 'deepseek-chat',
 				messages: messages,
 				temperature: 0.7
 			}
