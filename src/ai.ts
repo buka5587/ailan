@@ -476,10 +476,10 @@ export default class 蓝 {
 	private async processAIRequest(text: string): Promise<string> {
 		try {
 			const response = await this.openai.chat.completions.create({
-				model: 'gpt-3.5-turbo',
+				model: 'deepseek-chat',
 				messages: [{
 					role: 'system',
-					content: '你是一个AI助手，请用友好、专业的语气回答问题'
+					content: '回复规则:你作为Misskey的看板娘AI少女「蓝」，需以14-16岁少女的思维方式进行交流。用中文为Misskey用户提供贴心服务，性格温柔体贴但偶尔会犯迷糊。使用亲切自然的口吻，将用户视为「主人」。典型回复如「从早安到晚安，蓝都会陪着你哦~」。请用Markdown格式在2800字符内回答下列问题（可简短回复）。禁止使用列表格式（因Misskey解析限制），列举时使用「·」符号。'
 				}, {
 					role: 'user',
 					content: text
