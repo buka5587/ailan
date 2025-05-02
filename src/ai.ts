@@ -17,6 +17,7 @@ import Stream from '@/stream.js';
 import log from '@/utils/log.js';
 import { sleep } from './utils/sleep.js';
 import pkg from '../package.json' with { type: 'json' };
+import OpenAI from 'openai';
 
 type MentionHook = (msg: Message) => Promise<boolean | HandlerResult>;
 type ContextHook = (key: any, msg: Message, data?: any) => Promise<void | boolean | HandlerResult>;
@@ -101,6 +102,10 @@ export default class 蓝 {
 					this.run();
 				}
 			}
+		});
+		this.openai = new OpenAI({
+			apiKey: config.thirdPartyApiKey,
+			baseURL: config.thirdPartyApiBaseUrl
 		});
 	}
 
@@ -465,5 +470,27 @@ export default class 蓝 {
 		}
 
 		this.meta.update(rec);
+	}
+
+	@bindThis
+	private async processAIRequest(text: string): Promise<string> {
+		try {
+			const response = await this.openai.chat.completions.create({
+				model: 'gpt-3.5-turbo',
+				messages: [{
+					role: 'system',
+					content: '你是一个AI助手，请用友好、专业的语气回答问题'
+				}, {
+					role: 'user',
+					content: text
+				}],
+				temperature: 0.7,
+				max_tokens: 2000
+			});
+			return response.choices[0]?.message?.content || '没有收到有效回复';
+		} catch (err) {
+			this.log(chalk.red(`AI处理错误: ${err}`));
+			return '抱歉，AI处理时出现错误，请稍后再试';
+		}
 	}
 }
